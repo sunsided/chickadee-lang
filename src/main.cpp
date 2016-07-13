@@ -4,6 +4,7 @@
 
 #include "lexer.h"
 #include "parser.h"
+#include "codegen.h"
 #include "toplevel.h"
 
 int main() {
@@ -18,8 +19,14 @@ int main() {
     fprintf(stderr, "ready> ");
     getNextToken();
 
+    // Make the module, which holds all the code.
+    TheModule = llvm::make_unique<Module>("my cool jit", TheContext);
+
     // Run the main "interpreter loop" now.
     MainLoop();
+
+    // Print out all of the generated code.
+    TheModule->dump();
 
     return 0;
 }

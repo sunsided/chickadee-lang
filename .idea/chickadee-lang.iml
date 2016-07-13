@@ -3,15 +3,17 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/lexer.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/parser.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/toplevel.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/codegen.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/parser.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/include/toplevel.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/ast.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/include/parser.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/include/lexer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/helper.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/toplevel.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/codegen.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/lexer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/parser.h" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">

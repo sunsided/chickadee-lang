@@ -4,7 +4,7 @@ project(chickadee)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 include_directories(include src)
-set(SOURCE_FILES src/main.cpp include/lexer.h src/lexer.cpp include/ast.h include/parser.h src/parser.cpp include/helper.h src/toplevel.cpp include/toplevel.h)
+set(SOURCE_FILES src/main.cpp include/lexer.h src/lexer.cpp include/ast.h include/parser.h src/parser.cpp include/helper.h src/toplevel.cpp include/toplevel.h src/codegen.cpp include/codegen.h)
 add_executable(chickadee ${SOURCE_FILES})
 
 find_package(LLVM REQUIRED CONFIG)
