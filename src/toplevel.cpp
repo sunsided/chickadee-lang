@@ -6,12 +6,16 @@
 #include "parser.h"
 #include "codegen.h"
 #include "toplevel.h"
+#include "optimizer.h"
+#include "jit.h"
 
 static void HandleDefinition() {
     if (auto FnAST = ParseDefinition()) {
         if (auto *FnIR = FnAST->codegen()) {
             fprintf(stderr, "Read function definition:");
             FnIR->dump();
+            TheJIT->addModule(std::move(TheModule));
+            InitializeModuleAndPassManager();
         }
     } else {
         // Skip token for error recovery.
@@ -24,6 +28,7 @@ static void HandleExtern() {
         if (auto *FnIR = ProtoAST->codegen()) {
             fprintf(stderr, "Read extern: ");
             FnIR->dump();
+            FunctionProtos[ProtoAST->getName()] = std::move(ProtoAST);
         }
     } else {
         // Skip token for error recovery.
@@ -34,9 +39,25 @@ static void HandleExtern() {
 static void HandleTopLevelExpression() {
     // Evaluate a top-level expression into an anonymous function.
     if (auto FnAST = ParseTopLevelExpr()) {
-        if (auto *FnIR = FnAST->codegen()) {
-            fprintf(stderr, "Read top-level expression:");
-            FnIR->dump();
+        if (FnAST->codegen()) {
+
+            // JIT the module containing the anonymous expression, keeping a handle so
+            // we can free it later.
+            auto H = TheJIT->addModule(move(TheModule));
+            InitializeModuleAndPassManager();
+
+            // Search the JIT for the __anon_expr symbol.
+            auto ExprSymbol = TheJIT->findSymbol("__anon_expr");
+            assert(ExprSymbol && "Function not found");
+
+            // Get the symbol's address and cast it to the right type (takes no
+            // arguments, returns a double) so we can call it as a native function.
+            double (*FP)() = (double (*)())(intptr_t)ExprSymbol.getAddress();
+            fprintf(stderr, "Evaluated to %f\n", FP());
+
+            // Delete the anonymous expression module from the JIT.
+            TheJIT->removeModule(H);
+
         }
     } else {
         // Skip token for error recovery.

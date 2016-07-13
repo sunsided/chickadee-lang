@@ -1,13 +1,26 @@
 #include <string>
 #include <memory>
 #include <map>
+#include <optimizer.h>
 
 #include "lexer.h"
 #include "parser.h"
 #include "codegen.h"
+#include "jit.h"
 #include "toplevel.h"
 
+//! printd - printf that takes a double prints it as "%f\n", returning 0.
+//! intended to be used as "extern printd(x);"
+extern "C" double printd(double X) {
+    fprintf(stderr, "%f\n", X);
+    return 0;
+}
+
 int main() {
+    LLVMInitializeNativeTarget();
+    LLVMInitializeNativeAsmPrinter();
+    LLVMInitializeNativeAsmParser();
+
     // Install standard binary operators.
     // 1 is lowest precedence.
     BinOpPrecedence['<'] = 10;
@@ -19,14 +32,12 @@ int main() {
     fprintf(stderr, "ready> ");
     getNextToken();
 
-    // Make the module, which holds all the code.
-    TheModule = llvm::make_unique<Module>("my cool jit", TheContext);
+    // prepare the Just-in-Time compiler
+    TheJIT = make_unique<KaleidoscopeJIT>();
+    InitializeModuleAndPassManager();
 
     // Run the main "interpreter loop" now.
     MainLoop();
-
-    // Print out all of the generated code.
-    TheModule->dump();
 
     return 0;
 }

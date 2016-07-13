@@ -9,6 +9,7 @@
 
 #include "codegen.h"
 #include "parser.h"
+#include "jit.h"
 
 using namespace std;
 using namespace llvm;
@@ -78,9 +79,26 @@ Value *BinaryExprAST::codegen() {
     }
 }
 
+Function *getFunction(string Name) {
+    // First, see if the function has already been added to the current module.
+    if (auto *F = TheModule->getFunction(Name)) {
+        return F;
+    }
+
+    // If not, check whether we can codegen the declaration from some existing
+    // prototype.
+    auto FI = FunctionProtos.find(Name);
+    if (FI != FunctionProtos.end()) {
+        return FI->second->codegen();
+    }
+
+    // If no existing prototype exists, return null.
+    return nullptr;
+}
+
 Value *CallExprAST::codegen() {
     // Look up the name in the global module table.
-    Function *CalleeF = TheModule->getFunction(_callee);
+    Function *CalleeF = getFunction(_callee);
     if (!CalleeF) {
         return LogErrorV("Unknown function referenced");
     }
@@ -118,19 +136,13 @@ Function *PrototypeAST::codegen() {
 }
 
 Function *FunctionAST::codegen() {
-    // First, check for an existing function from a previous 'extern' declaration.
-    Function *TheFunction = TheModule->getFunction(_proto->getName());
-
-    if (!TheFunction) {
-        TheFunction = _proto->codegen();
-    }
-
+    // Transfer ownership of the prototype to the FunctionProtos map, but keep a
+    // reference to it for use below.
+    auto &P = *_proto;
+    FunctionProtos[_proto->getName()] = move(_proto);
+    Function *TheFunction = getFunction(P.getName());
     if (!TheFunction) {
         return nullptr;
-    }
-
-    if (!TheFunction->empty()) {
-        return (Function *) LogErrorV("Function cannot be redefined.");
     }
 
     // Create a new basic block to start insertion into.
@@ -147,9 +159,11 @@ Function *FunctionAST::codegen() {
         // Finish off the function.
         Builder.CreateRet(RetVal);
 
-        // Validate the generated code, checking for consistency.
-        // defined in llvm/IR/Verifier.h
+        // Validate the generated code, checking for consistency, defined in llvm/IR/Verifier.h
         verifyFunction(*TheFunction);
+
+        // Optimize the function.
+        TheFPM->run(*TheFunction);
 
         return TheFunction;
     }
