@@ -104,7 +104,7 @@ namespace llvm {
                 // This is the opposite of the usual search order for dlsym, but makes more
                 // sense in a REPL where we want to bind to the newest available definition.
                 for (auto H : make_range(ModuleHandles.rbegin(), ModuleHandles.rend()))
-                    if (auto Sym = CompileLayer.findSymbolIn(H, Name, true))
+                    if (auto Sym = CompileLayer.findSymbolIn(H, Name, false /* <-- http://stackoverflow.com/a/33717957/195651 */))
                         return Sym;
 
                 // If we can't find the symbol in the JIT, try looking in the host process.
