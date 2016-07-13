@@ -98,9 +98,9 @@ unique_ptr<ExprAST> ParsePrimary() {
     }
 }
 
-/// BinopPrecedence - This holds the precedence for each binary operator that is
+/// BinOpPrecedence - This holds the precedence for each binary operator that is
 /// defined.
-map<char, int> BinopPrecedence;
+map<char, int> BinOpPrecedence;
 
 //! GetTokPrecedence - Get the precedence of the pending binary operator token.
 int GetTokPrecedence() {
@@ -109,7 +109,7 @@ int GetTokPrecedence() {
     }
 
     // Make sure it's a declared binop.
-    int TokPrec = BinopPrecedence[CurTok];
+    int TokPrec = BinOpPrecedence[CurTok];
     if (TokPrec <= 0) {
         return -1;
     }
@@ -130,14 +130,14 @@ std::unique_ptr<ExprAST> ParseExpression() {
 
 //! binoprhs
 //!   ::= ('+' primary)*
-unique_ptr<ExprAST> ParseBinOpRHS(int ExprPrec, unique_ptr<ExprAST> LHS) {
+unique_ptr<ExprAST> ParseBinOpRHS(int expressionPrecedence, unique_ptr<ExprAST> LHS) {
     // If this is a binop, find its precedence.
     while (1) {
         int TokPrec = GetTokPrecedence();
 
         // If this is a binop that binds at least as tightly as the current binop,
         // consume it, otherwise we are done.
-        if (TokPrec < ExprPrec) {
+        if (TokPrec < expressionPrecedence) {
             return LHS;
         }
 

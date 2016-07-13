@@ -9,9 +9,9 @@
 #include "ast.h"
 
 
-/// BinopPrecedence - This holds the precedence for each binary operator that is
+/// BinOpPrecedence - This holds the precedence for each binary operator that is
 /// defined.
-extern map<char, int> BinopPrecedence;
+extern map<char, int> BinOpPrecedence;
 int GetTokPrecedence();
 
 unique_ptr<ExprAST> LogError(const char *Str);
@@ -23,7 +23,7 @@ unique_ptr<ExprAST> ParsePrimary();
 unique_ptr<FunctionAST> ParseDefinition();
 unique_ptr<PrototypeAST> ParseExtern();
 unique_ptr<ExprAST> ParseExpression();
-unique_ptr<ExprAST> ParseBinOpRHS(int ExprPrec, unique_ptr<ExprAST> LHS);
+unique_ptr<ExprAST> ParseBinOpRHS(int expressionPrecedence, unique_ptr<ExprAST> LHS);
 unique_ptr<PrototypeAST> ParsePrototype();
 unique_ptr<FunctionAST> ParseDefinition();
 unique_ptr<PrototypeAST> ParseExtern();
