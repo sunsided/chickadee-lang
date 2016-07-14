@@ -9,4 +9,3 @@
 using namespace llvm::orc;
 
 unique_ptr<KaleidoscopeJIT> TheJIT;
-map<string, unique_ptr<PrototypeAST>> FunctionProtos;

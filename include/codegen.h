@@ -10,6 +10,7 @@
 #include <llvm/IR/Value.h>
 #include <llvm/IR/Function.h>
 #include <llvm/IR/Module.h>
+#include "ast.h"
 
 using namespace std;
 using namespace llvm;
@@ -23,6 +24,8 @@ extern LLVMContext TheContext;
 //! It will own the memory for all of the IR that we generate, which is why the codegen() method returns
 //! a raw Value*, rather than a unique_ptr<Value>.
 extern unique_ptr<Module> TheModule;
+
+extern map<string, unique_ptr<PrototypeAST>> FunctionProtos;
 
 Value *LogErrorV(const char *Str);
 

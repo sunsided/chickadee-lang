@@ -33,6 +33,8 @@ unique_ptr<Module> TheModule;
 //! LLVM representation is. (In other words, it is a symbol table for the code).
 static map<string, Value *> NamedValues;
 
+map<string, unique_ptr<PrototypeAST>> FunctionProtos;
+
 Value *LogErrorV(const char *Str) {
     LogError(Str);
     return nullptr;

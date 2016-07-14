@@ -16,6 +16,5 @@ using namespace llvm::orc;
 
 extern unique_ptr<KaleidoscopeJIT> TheJIT;
 extern unique_ptr<legacy::FunctionPassManager> TheFPM;
-extern map<string, unique_ptr<PrototypeAST>> FunctionProtos;
 
 #endif //CHICKADEE_JIT_H

@@ -28,7 +28,7 @@ static void HandleExtern() {
         if (auto *FnIR = ProtoAST->codegen()) {
             fprintf(stderr, "Read extern: ");
             FnIR->dump();
-            FunctionProtos[ProtoAST->getName()] = std::move(ProtoAST);
+            FunctionProtos[ProtoAST->getName()] = move(ProtoAST);
         }
     } else {
         // Skip token for error recovery.
